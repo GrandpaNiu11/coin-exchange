@@ -1,0 +1,32 @@
+spring:
+  application:  # 应用名称
+    name: match-service
+  profiles:  #切换到开发环境上面
+    active: dev
+  cloud:
+    nacos:  #配置Nacos的地址
+      server-addr: 127.0.0.1:8848
+      config:  # 配置文件的扩展名
+        file-extension: yaml
+    stream:
+      rocketmq:
+        binder:
+          name-server: localhost:9876
+        binders:
+          order_in: {consumer.orderly:true}
+      bindings:
+        order_in: {destination: order_in, content-type: application/plain, group: order-group, consumer.maxAttempts: 1}
+        trade_plate_out: {destination: trade_plate_out, content-type: application/plain}
+        completed_orders_out: {destination: completed_orders_out, content-type: application/plain}
+        exchange_trades_out: {destination: exchange_trades_out, content-type: application/plain}
+  match:
+    symbols:
+      BTCGTN:
+        coin-scale: 8
+        base-coin-scale: 8
+      ETHGCN:
+        coin-scale: 8
+        base-coin-scale: 8
+      FOFTGCN:
+        coin-scale: 8
+        base-coin-scale: 8

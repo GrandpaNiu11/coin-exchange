@@ -1,0 +1,84 @@
+server:
+  port: 80
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      globalcors:
+        cors-configurations:
+          '[/**]': # 匹配所有路径
+            allowed-origins:
+              - "http://localhost:9527"
+              - "http://localhost:7878"
+              - "https://yourdomain.com"
+            allowed-methods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+              - PATCH
+            allowed-headers:
+              - "*"
+            allow-credentials: true  # 允许携带cookie
+            max-age: 3600  # 预检请求缓存时间（秒）
+      routes:
+        - id: admin-service_router
+          uri: lb://admin-service
+          predicates:
+            - Path=/admin/**
+          filters:
+            - StripPrefix=1
+        - id: member-service_router
+          uri: lb://member-service
+          predicates:
+            - Path=/user/**
+          filters:
+            - StripPrefix=1
+        - id: member-service_router
+          uri: lb://finance-service
+          predicates:
+            - Path=/finance/**
+          filters:
+            - StripPrefix=1
+        - id: exchange-service_router
+          uri: lb://exchange-service
+          predicates:
+            - Path=/exchange/**
+          filters:
+            - StripPrefix=1
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:8858
+      datasource:
+#          ds1.file:
+##            网关和api分组的限流
+#            file: classpath:gw-flow.json
+#            rule-type:  gw_flow
+#          ds2.file:
+#            file: classpath:api-group.json
+#            rule-type: gw_api_group
+        ds1.nacos:
+          server-addr: 127.0.0.1:8848
+          data-id: gw-flow
+          rule-type: gw_flow
+        ds2.nacos:
+          server-addr: 127.0.0.1:8848
+          data-id: api-group
+          rule-type: gw_api_group
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: 123456
+
+
+
+

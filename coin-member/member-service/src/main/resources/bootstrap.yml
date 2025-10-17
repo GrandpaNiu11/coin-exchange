@@ -1,0 +1,13 @@
+spring:
+  application:  # 应用名称
+    name: member-service
+  profiles:  #切换到开发环境上面
+    active: dev
+  cloud:
+    nacos:  #配置Nacos的地址
+      server-addr: 127.0.0.1:8848
+      config:  # 配置文件的扩展名
+        file-extension: yaml
+geetest:
+  geetest-id: a6b6e2aa30f150bc862fcf7ec71a1b91
+  geetest-key: 9f886fbb1bab2b643ea19fe0ddfda53c
